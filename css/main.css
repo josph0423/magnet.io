@@ -1,8 +1,9 @@
-html, body, canvas {
-  overflow: hidden;
+html,body{
+  margin: 0px;
   padding: 0px;
 }
 
-body {
-  background-color: #8becff;
+html, body, canvas {
+  overflow: hidden;
+  padding: 0px;
 }
