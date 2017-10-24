@@ -11,7 +11,10 @@ planeImg.src = "images/plane.png";
 var plane = {
   x: 0,
   y: 0,
-  angle: 0
+  displayX:0,
+  displayY:0,
+  angle: 0,
+  speed:150
 }
 
 function draw() {
@@ -25,9 +28,9 @@ function draw() {
 
 
   ctx.save();
-  ctx.translate(plane.x+planeImg.width/2,plane.y+planeImg.height/2);
-  ctx.rotate(1*(Math.PI/180));
-  ctx.drawImage(planeImg,planeImg.width/-2,planeImg.height/-2,100,100);
+  ctx.translate(plane.displayX,plane.displayY);
+  ctx.rotate(plane.angle*(Math.PI/180));
+  ctx.drawImage(planeImg,planeImg.width/-2,planeImg.height/-2,planeImg.width,planeImg.height);
   ctx.restore();
 
 
@@ -35,7 +38,7 @@ function draw() {
 }
 
 
-var FPS = 30;
+var FPS = 100;
 setInterval(draw,1000/FPS);
 
 
@@ -56,21 +59,33 @@ function updateWidthHeight() {
 
 
 function planeFun() {
-  plane.x = sky.width / 2;
-  plane.y = sky.height / 2;
+  plane.displayX = sky.width / 2;
+  plane.displayY = sky.height / 2;
 
 
-  plane.x -= planeImg.width/2;
-  plane.y -= planeImg.height/2;
+  if (keyboard=="laft") {
+    plane.angle += plane.speed/FPS*-1;
+  }else if (keyboard=="right") {
+    plane.angle += plane.speed/FPS*1;
+  }
 }
 
 
-
-var mouse = {
-  x: 0,
-  y: 0
-}
-$("canvas").mousemove(function(event){
-    mouse.x = event.clientX;
-    mouse.y = event.clientY;
+var keyboard = null;
+$(document).ready(function() {
+  $(window).keydown(function(event) {
+    if (event.keyCode==37&&keyboard!="laft") {
+      keyboard = "laft";
+    }
+    if (event.keyCode==39&&keyboard!="right") {
+      keyboard = "right";
+    }
+  });
+  $(window).keyup(function(event) {
+    if (event.keyCode==37&&keyboard=="laft") {
+      keyboard = null;
+    }else if (event.keyCode==39&&keyboard=="right") {
+      keyboard = null;
+    }
+  });
 });
