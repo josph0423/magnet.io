@@ -1,26 +1,75 @@
-var game = new Phaser.Game(1024, 512, Phaser.CANVAS, 'phaser-example', {
+var game = new Phaser.Game( 1024, 512, Phaser.CANVAS, 'phaser-example', {
 	preload: preload,
 	create: create,
-	update: update
-});
+	update: update,
+	render: render
+} );
 
 function preload() {
-	game.load.image('back', 'images/back.svg', 0, 0);
-	game.load.image('plane', 'images/plane.svg', 0, 0);
+	game.load.image( 'background', 'images/background.svg' );
+	game.load.image( 'plane', 'images/plane.svg' );
 }
 
-function create() {
-	game.stage.backgroundColor = '#000000';
-	var back = game.add.sprite(0, 0, 'back');
-	back.width = 10000;
-	back.height = 5000;
 
-	var plane = game.add.sprite(0, 0, 'plane');
+var plane;
+
+function create() {
+
+
+	game.physics.startSystem( Phaser.Physics.ARCADE );
+
+
+
+	game.add.tileSprite( 0, 0, 10000, 5000, 'background' );
+	game.world.setBounds( 0, 0, 10000, 5000 );
+
+
+
+	game.physics.startSystem( Phaser.Physics.P2JS );
+
+
+
+	plane = game.add.sprite( game.world.centerX, game.world.centerY, 'plane' );
+
+	game.physics.p2.enable( plane );
+
+	plane.body.fixedRotation = true;
+
+
+
+	cursors = game.input.keyboard.createCursorKeys();
+
+
+
+	game.camera.follow( plane, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1 );
+
+
+
+	game.physics.enable( plane, Phaser.Physics.ARCADE );
+
+
 	plane.width = 50;
 	plane.height = 50;
 
-	plane.centerX = game.width/2;
-	plane.centerY = game.height/2;
+	plane.body.maxAngular = 500;
+	plane.body.angularDrag = 50;
+
 }
 
-function update() {}
+function update() {
+	plane.body.setZeroVelocity();
+
+	
+
+	if ( cursors.left.isDown ) {
+		plane.body.angularAcceleration -= 200;
+	} else if ( cursors.right.isDown ) {
+		plane.body.angularAcceleration += 200;
+	}
+	// game.physics.arcade.velocityFromAngle( plane.angle, 300, plane.body.velocity );
+}
+
+
+function render() {
+	game.debug.cameraInfo( game.camera, 32, 32 );
+}
